@@ -1,37 +1,50 @@
-<!-- register.php -->
 <?php
-include 'db.php'; // Include the database connection file
+include 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $username = $_POST['username'];
-  $password = $_POST['password'];
+  if (isset($_POST['username']) && isset($_POST['password'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-  // Hash the password for security
-  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    // Hash the password for security
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-  // Check if the username already exists
-  $stmt = $conn->prepare("SELECT * FROM user_info WHERE username = ?");
-  $stmt->bind_param("s", $username);
-  $stmt->execute();
-  $result = $stmt->get_result();
+    // Check if the username already exists
+    $stmt = $conn->prepare("SELECT * FROM user_info WHERE username = ?");
+    if ($stmt) {
+      $stmt->bind_param("s", $username);
+      $stmt->execute();
+      $result = $stmt->get_result();
 
-  if ($result->num_rows > 0) {
-    echo "Username already taken. Please choose another one.";
-  } else {
-    // Prepare and bind
-    $stmt = $conn->prepare("INSERT INTO user_info (username, password) VALUES (?, ?)");
-    $stmt->bind_param("ss", $username, $hashed_password);
+      if ($result->num_rows > 0) {
+        echo json_encode(["status" => "error", "message" => "Username already taken."]);
+      } else {
+        // Prepare and bind for insertion
+        $stmt = $conn->prepare("INSERT INTO user_info (username, password) VALUES (?, ?)");
+        if ($stmt) {
+          $stmt->bind_param("ss", $username, $hashed_password);
 
-    // Execute the statement
-    if ($stmt->execute()) {
-      echo "Registration successful!";
+          // Execute the statement
+          if ($stmt->execute()) {
+            echo json_encode(["status" => "success", "message" => "Registration successful!"]);
+          } else {
+            echo json_encode(["status" => "error", "message" => "Registration failed."]);
+          }
+        } else {
+          echo json_encode(["status" => "error", "message" => "Statement preparation failed."]);
+        }
+      }
+
+      // Close connections
+      $stmt->close();
     } else {
-      echo "Error: " . $stmt->error;
+      echo json_encode(["status" => "error", "message" => "Statement preparation failed."]);
     }
-  }
 
-  // Close connections
-  $stmt->close();
-  $conn->close();
+    $conn->close();
+  } else {
+    echo json_encode(["status" => "error", "message" => "Username and password are required."]);
+  }
+} else {
+  echo json_encode(["status" => "error", "message" => "Invalid request method."]);
 }
-?>

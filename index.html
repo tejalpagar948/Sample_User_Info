@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Registration</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   </head>
   <body>
     <h1>User Registration</h1>
-    <form id="userForm" action="/register.php" method="POST">
-      <label for="username">Usernamee:</label>
+    <form id="userForm">
+      <label for="username">Username:</label>
       <input type="text" id="username" name="username" required />
       <br />
       <label for="password">Password:</label>
@@ -18,5 +19,32 @@
       <br />
       <button type="submit">Register</button>
     </form>
+    <script src="./jquery-3.7.1.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $('#userForm').on('submit', function (event) {
+          event.preventDefault(); // Prevent default form submission
+          var formData = {
+            username: $('#username').val(),
+            password: $('#password').val(),
+          };
+          console.log('formData' + formData);
+          var formData = $(this).serialize(); // Serialize form data
+
+          $.ajax({
+            url: 'register.php', // WordPress AJAX URL
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+              console.log('Form submitted successfully!'); // Handle success
+            },
+            error: function () {
+              alert('An error occurred.'); // Handle error
+            },
+          });
+        });
+      });
+    </script>
+    <!-- <script src="./script.js"></script> -->
   </body>
 </html>
