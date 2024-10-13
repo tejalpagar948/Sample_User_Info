@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -31,7 +32,7 @@
           var formData = $(this).serialize(); // Serialize form data
 
           $.ajax({
-            url: 'https://localhost/Sample_User_Info/register.php', // WordPress AJAX URL
+            url: 'http://localhost/Sample_User_Info/register.php', // WordPress AJAX URL
             type: 'POST',
             data: formData,
             success: function (response) {
