@@ -19,27 +19,27 @@
       <br />
       <button type="submit">Register</button>
     </form>
-    <script src="./jquery-3.7.1.min.js"></script>
     <script>
       $(document).ready(function () {
         $('#userForm').on('submit', function (event) {
           event.preventDefault(); // Prevent default form submission
-          var formData = {
-            username: $('#username').val(),
-            password: $('#password').val(),
-          };
-          console.log('formData' + formData);
-          var formData = $(this).serialize(); // Serialize form data
+
+          // Serialize form data
+          var formData = $(this).serialize();
+
+          // Log the serialized data
+          console.log('Form Data:', formData);
 
           $.ajax({
-            url: 'https://localhost/Sample_User_Info/register.php', // WordPress AJAX URL
+            url: 'https://localhost/Sample_User_Info/register.php',
             type: 'POST',
             data: formData,
             success: function (response) {
-              console.log('Form submitted successfully!'); // Handle success
+              console.log('Form submitted successfully! Response:', response); // Handle success
             },
-            error: function () {
-              alert('An error occurred.'); // Handle error
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.error('Error occurred:', textStatus, errorThrown); // Handle error
+              alert('An error occurred: ' + textStatus);
             },
           });
         });
