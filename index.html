@@ -36,9 +36,8 @@
             success: function (response) {
               console.log('Form submitted successfully! Response:', response); // Handle success
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-              console.error('Error occurred:', textStatus, errorThrown); // Handle error
-              alert('An error occurred: ' + textStatus);
+            error: function () {
+              alert('An error occurred: ');
             },
           });
         });
